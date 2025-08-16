@@ -35,6 +35,11 @@ jobs:
           export DEBIAN_FRONTEND=noninteractive
           apt-get update
 
+      - name: Install Kernel
+        run: |
+          export DEBIAN_FRONTEND=noninteractive
+          apt-get install -y linux-generic
+
       - name: Install ISO Tools
         run: |
           export DEBIAN_FRONTEND=noninteractive
