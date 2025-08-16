@@ -38,18 +38,67 @@ jobs:
       - name: Install ISO Tools
         run: |
           export DEBIAN_FRONTEND=noninteractive
-          apt-get install -y xorriso isolinux syslinux-utils
-          
+          apt-get install -y squashfs-tools xorriso isolinux syslinux-utils casper      
+      
+      
+      
+      
 
       #------------------------------------------------------------------------------------------
-      # Create ISO
+      # Create OS
       #------------------------------------------------------------------------------------------
+
+
+      - name: Create Directories
+        run: |
+          mkdir -p $BUILD_DIR/image/{casper,isolinux}
+
+
+      - name: Copy System Files
+        run: |
+          # Copy kernel and initrd
+          cp /boot/vmlinuz-* $BUILD_DIR/image/casper/vmlinuz
+          cp /boot/initrd.img-* $BUILD_DIR/image/casper/initrd.img
+          
+          # Copy isolinux files
+          cp /usr/lib/ISOLINUX/isolinux.bin $BUILD_DIR/image/isolinux/
+          cp /usr/lib/syslinux/modules/bios/ldlinux.c32 $BUILD_DIR/image/isolinux/
+          
+          
+
+      - name: Create Boot Config
+        run: |
+          cat > $BUILD_DIR/image/isolinux/isolinux.cfg << EOF
+          DEFAULT live
+          LABEL live
+            kernel /casper/vmlinuz
+            append initrd=/casper/initrd.img boot=casper quiet splash
+          TIMEOUT 10
+          EOF
+
 
       - name: Create ISO
         run: |
+          # Create squashfs of the entire root filesystem
+          mksquashfs / $BUILD_DIR/image/casper/filesystem.squashfs \
+            -e proc sys dev tmp run var/cache var/log boot $BUILD_DIR
           
+          # Create the ISO
+          xorriso -as mkisofs \
+            -isohybrid-mbr /usr/lib/ISOLINUX/isohdpfx.bin \
+            -c isolinux/boot.cat \
+            -b isolinux/isolinux.bin \
+            -no-emul-boot -boot-load-size 4 -boot-info-table \
+            -o $BUILD_DIR/live-container.iso \
+            $BUILD_DIR/image
           
-          
+
+      - name: Upload ISO
+        uses: actions/upload-artifact@v4
+        with:
+          name: live-container-iso
+          path: /workspace/build/live-container.iso
+
 
 
 
