@@ -56,7 +56,8 @@ jobs:
 
       - name: Create Directories
         run: |
-          mkdir -p $BUILD_DIR/image/{casper,isolinux}
+          mkdir -p $BUILD_DIR/image/casper
+          mkdir -p $BUILD_DIR/image/isolinux
 
 
       - name: Copy System Files
