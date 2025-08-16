@@ -1,5 +1,7 @@
 # Build
 
+name: Build
+
 on:
   push:
     branches: ['main']
@@ -13,6 +15,7 @@ jobs:
 
   # Build Job
   build:
+    name: Build Job
     runs-on: ubuntu-latest
 
     # Start with a fresh Ubuntu container
