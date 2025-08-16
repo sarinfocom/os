@@ -30,11 +30,24 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v4
 
-      - name: Setup
+      - name: apt update
         run: |
           export DEBIAN_FRONTEND=noninteractive
-          apt-get update         
+          apt-get update
+
+      - name: Install ISO Tools
+        run: |
+          export DEBIAN_FRONTEND=noninteractive
           apt-get install -y xorriso isolinux syslinux-utils
+          
+
+      #------------------------------------------------------------------------------------------
+      # Create ISO
+      #------------------------------------------------------------------------------------------
+
+      - name: Create ISO
+        run: |
+          
           
           
 
