@@ -1,0 +1,35 @@
+# Build
+
+on:
+  push:
+    branches: ['main']
+
+
+env:
+  NAME: OS
+
+
+jobs:
+
+  # Build Job
+  build:
+    runs-on: ubuntu-latest
+
+    # Start with a fresh Ubuntu container
+    container:
+      image: ubuntu:22.04
+      options: --privileged --device=/dev/loop-control
+
+
+    steps:
+
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+
+      - name:
+
+
+
+
+
